@@ -37,8 +37,8 @@ namespace WebServiceForAngular
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = @"Data Source=NASTYUHA;Initial Catalog=UserPostDB;Integrated Security=True";
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection, b => b.MigrationsAssembly("WebServiceForAngular")));
+            var connection = @"Data Source=NASTYUHA;Initial Catalog=UsersPostDB;Integrated Security=True";
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection, b => b.MigrationsAssembly("WebServiceForAngular.DAL")));
             services.AddIdentity<AppUser, IdentityRole>()
           .AddEntityFrameworkStores<ApplicationDbContext>()
           .AddDefaultTokenProviders();

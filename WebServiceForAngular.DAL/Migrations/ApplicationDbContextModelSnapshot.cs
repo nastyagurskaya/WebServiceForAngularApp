@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebServiceForAngular.DAL.EF;
 
-namespace WebServiceForAngular.Migrations
+namespace WebServiceForAngular.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180612084215_initial")]
-    partial class initial
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,7 +129,7 @@ namespace WebServiceForAngular.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("WebServiceForAngular.Models.AppUser", b =>
+            modelBuilder.Entity("WebServiceForAngular.DAL.Models.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -162,8 +160,6 @@ namespace WebServiceForAngular.Migrations
 
                     b.Property<string>("PasswordHash");
 
-                    b.Property<string>("Phone");
-
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
@@ -188,13 +184,53 @@ namespace WebServiceForAngular.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("WebServiceForAngular.Models.Post", b =>
+            modelBuilder.Entity("WebServiceForAngular.DAL.Models.CheckItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Body");
+
+                    b.Property<int?>("CheckListPostId");
+
+                    b.Property<bool>("Checked");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CheckListPostId");
+
+                    b.ToTable("CheckItem");
+                });
+
+            modelBuilder.Entity("WebServiceForAngular.DAL.Models.CheckListPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Color");
+
+                    b.Property<string>("Title");
+
+                    b.Property<int?>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CheckListPost");
+                });
+
+            modelBuilder.Entity("WebServiceForAngular.DAL.Models.Post", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Body");
+
+                    b.Property<string>("Color");
 
                     b.Property<string>("Title");
 
@@ -207,7 +243,7 @@ namespace WebServiceForAngular.Migrations
                     b.ToTable("Post");
                 });
 
-            modelBuilder.Entity("WebServiceForAngular.Models.User", b =>
+            modelBuilder.Entity("WebServiceForAngular.DAL.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -232,6 +268,21 @@ namespace WebServiceForAngular.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("WebServiceForAngular.DAL.Models.UserPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("PostId");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserPost");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
@@ -242,7 +293,7 @@ namespace WebServiceForAngular.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("WebServiceForAngular.Models.AppUser")
+                    b.HasOne("WebServiceForAngular.DAL.Models.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -250,7 +301,7 @@ namespace WebServiceForAngular.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("WebServiceForAngular.Models.AppUser")
+                    b.HasOne("WebServiceForAngular.DAL.Models.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -263,7 +314,7 @@ namespace WebServiceForAngular.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("WebServiceForAngular.Models.AppUser")
+                    b.HasOne("WebServiceForAngular.DAL.Models.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -271,23 +322,38 @@ namespace WebServiceForAngular.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("WebServiceForAngular.Models.AppUser")
+                    b.HasOne("WebServiceForAngular.DAL.Models.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("WebServiceForAngular.Models.Post", b =>
+            modelBuilder.Entity("WebServiceForAngular.DAL.Models.CheckItem", b =>
                 {
-                    b.HasOne("WebServiceForAngular.Models.User", "User")
+                    b.HasOne("WebServiceForAngular.DAL.Models.CheckListPost", "CheckListPost")
+                        .WithMany("CheckList")
+                        .HasForeignKey("CheckListPostId")
+                        .HasConstraintName("FK_CheckListPostId");
+                });
+
+            modelBuilder.Entity("WebServiceForAngular.DAL.Models.CheckListPost", b =>
+                {
+                    b.HasOne("WebServiceForAngular.DAL.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("WebServiceForAngular.DAL.Models.Post", b =>
+                {
+                    b.HasOne("WebServiceForAngular.DAL.Models.User", "User")
                         .WithMany("Post")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_UserId");
                 });
 
-            modelBuilder.Entity("WebServiceForAngular.Models.User", b =>
+            modelBuilder.Entity("WebServiceForAngular.DAL.Models.User", b =>
                 {
-                    b.HasOne("WebServiceForAngular.Models.AppUser", "Identity")
+                    b.HasOne("WebServiceForAngular.DAL.Models.AppUser", "Identity")
                         .WithMany()
                         .HasForeignKey("IdentityId");
                 });
