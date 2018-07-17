@@ -75,7 +75,7 @@ namespace WebServiceForAngular.Controllers
             int id = _checkPostService.InsertCheckPost(checkpost);
             return id;
         }
-        [HttpPost("create/checklistitem")]
+        [HttpPost("checklistitem/create")]
         public async Task<int> CreateCheckListItem([FromBody]CheckItemViewModel model)
         {
             
