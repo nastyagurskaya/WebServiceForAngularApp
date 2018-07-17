@@ -23,9 +23,9 @@ namespace WebServiceForAngular.BLL.Services
             return checkPostRepository.Get(id);
         }
 
-        public IEnumerable<CheckListPost> GetCheckPostsByUser(int id)
+        public List<CheckListPost> GetCheckPostsByUser(int id)
         {
-            return checkPostRepository.Find(p => p.UserId == id);
+            return checkPostRepository.Find(p => p.UserId == id).ToList();
         }
 
         public async Task<List<CheckListPost>> GetCheckPostsByUserAsync(int id)
@@ -37,9 +37,9 @@ namespace WebServiceForAngular.BLL.Services
             return await ps.ToListAsync();
         }
 
-        public IEnumerable<CheckListPost> GetCheckListPosts()
+        public List<CheckListPost> GetCheckListPosts()
         {
-            return checkPostRepository.GetDbSet().Include(c => c.CheckList);
+            return checkPostRepository.GetDbSet().Include(c => c.CheckList).ToList();
         }
 
         public void UpdateCheckPost(CheckListPost post)

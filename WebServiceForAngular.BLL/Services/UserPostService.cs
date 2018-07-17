@@ -23,17 +23,17 @@ namespace WebServiceForAngular.BLL.Services
 
        
 
-        public IEnumerable<Post> GetSharedPosts(int id)
+        public List<Post> GetSharedPosts(int id)
         {
-            var userposts = userPostRepository.Find(p => p.UserId == id);
+            var userposts = userPostRepository.Find(p => p.UserId == id).Select(x => x.PostId);
             //var userposts = userPostRepository.GetDbSet()
-            var posts = new List<Post>();
-            foreach (UserPost up in userposts)
-            {
-                var post= postRepository.GetDbSet().Include(p => p.User).First(p => p.Id == up.PostId);
-                posts.Add(post);
-            }
-            return posts;
+            //var posts = new List<Post>();
+           // foreach (UserPost up in userposts)
+           // {
+            var posts = postRepository.GetDbSet().Include(p => p.User).Where(p => userposts.Contains(p.Id));
+               // posts.Add(post);
+           // }
+            return posts.ToList();
         }
 
         public void SharePost(UserPost userPost)

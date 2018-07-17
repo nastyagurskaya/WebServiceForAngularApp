@@ -8,7 +8,7 @@ namespace WebServiceForAngular.BLL.Interfaces
 {
     public interface IUserPostService
     {
-        IEnumerable<Post> GetSharedPosts(int id);
+        List<Post> GetSharedPosts(int id);
         void SharePost(UserPost userPost);
     }
 }

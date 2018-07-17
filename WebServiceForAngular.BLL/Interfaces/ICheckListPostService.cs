@@ -9,11 +9,11 @@ namespace WebServiceForAngular.BLL.Interfaces
     public interface ICheckListPostService
     {
         CheckListPost GetCheckListPost(int id);
-        IEnumerable<CheckListPost> GetCheckListPosts();
+        List<CheckListPost> GetCheckListPosts();
         void UpdateCheckPost(CheckListPost post);
         void DeleteCheckPost(int id);
         int InsertCheckPost(CheckListPost post);
-        IEnumerable<CheckListPost> GetCheckPostsByUser(int id);
+        List<CheckListPost> GetCheckPostsByUser(int id);
         Task<List<CheckListPost>> GetCheckPostsByUserAsync(int id);
     }
 }

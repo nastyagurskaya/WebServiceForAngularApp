@@ -8,12 +8,12 @@ namespace WebServiceForAngular.BLL.Interfaces
 {
     public interface IPostService
     {
-        IEnumerable<Post> GetPosts();
+        List<Post> GetPosts();
         Post GetPost(int id);
         void UpdatePost(Post post);
         void DeletePost(int id);
         void InsertPost(Post post);
-        IEnumerable<Post> GetPostsByUser(int id);
+        List<Post> GetPostsByUser(int id);
         Task<List<Post>> GetPostsByUserAsync(int id);
     }
 }

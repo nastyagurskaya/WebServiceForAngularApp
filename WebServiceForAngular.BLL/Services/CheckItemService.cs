@@ -40,9 +40,9 @@ namespace WebServiceForAngular.BLL.Services
             return checkListRepository.Get(id);
         }
 
-        public IEnumerable<CheckItem> GetCheckItemsByCheckPost(int id)
+        public List<CheckItem> GetCheckItemsByCheckPost(int id)
         {
-            return checkListRepository.Find(l => l.CheckListPostId == id);
+            return checkListRepository.Find(l => l.CheckListPostId == id).ToList();
         }
 
         public int InsertCheckItem(CheckItem post)
@@ -55,9 +55,9 @@ namespace WebServiceForAngular.BLL.Services
             checkListRepository.Update(post);
         }
 
-        public IEnumerable<CheckItem> GetCheckItems()
+        public List<CheckItem> GetCheckItems()
         {
-            return checkListRepository.GetDbSet();
+            return checkListRepository.GetDbSet().ToList();
         }
     }
 }

@@ -31,14 +31,14 @@ namespace WebServiceForAngular.BLL.Services
             return postRepository.Get(id);
         }
 
-        public IEnumerable<Post> GetPosts()
+        public List<Post> GetPosts()
         {
-            return postRepository.GetAll();
+            return postRepository.GetAll().ToList();
         }
 
-        public IEnumerable<Post> GetPostsByUser(int id)
+        public List<Post> GetPostsByUser(int id)
         {
-            return postRepository.Find(p => p.UserId == id);
+            return postRepository.Find(p => p.UserId == id).ToList();
         }
 
         public async Task<List<Post>> GetPostsByUserAsync(int id)
