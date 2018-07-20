@@ -43,8 +43,6 @@ namespace WebServiceForAngular.BLL.Services
 
         public void DeleteUser(int id)
         {
-            Post post = postRepository.Get(id);
-            postRepository.Remove(post);
             User user = GetUser(id);
             userRepository.Remove(user);
             userRepository.SaveChanges();

@@ -23,12 +23,12 @@ namespace WebServiceForAngular.Controllers
         private readonly ICheckListPostService _checkPostService;
         private readonly ICheckItemService _checkItemService;
         private readonly IUserService _userService;
-        private readonly ClaimsPrincipal _caller;
         private readonly IMapper _mapper;
+        private readonly IClaimPrincipalService _claimPrincipalService;
 
-        public CheckPostsController(ICheckListPostService checkPostService, ICheckItemService checkItemService, IUserService userService, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+        public CheckPostsController(ICheckListPostService checkPostService, ICheckItemService checkItemService, IUserService userService, IMapper mapper, IClaimPrincipalService claimPrincipalService)
         {
-            _caller = httpContextAccessor.HttpContext.User;
+            _claimPrincipalService = claimPrincipalService;
             _checkPostService = checkPostService;
             _checkItemService = checkItemService;
             _userService = userService;
@@ -38,7 +38,7 @@ namespace WebServiceForAngular.Controllers
         [HttpGet]
         public async Task<List<CheckListPost>> GetAll()
         {
-            var userId = _caller.Claims.Single(c => c.Type == "id");
+            var userId = _claimPrincipalService.GetClaimFromHttp();
             var user = await _userService.GetUserByClaimAsync(userId);
             return await _checkPostService.GetCheckPostsByUserAsync(user.Id);
         }
@@ -52,8 +52,6 @@ namespace WebServiceForAngular.Controllers
         [HttpGet("checkitems/{id}")]
         public IEnumerable<CheckItem> GetCheckItemsbiPostId(int id)
         {
-            // var userId = _caller.Claims.Single(c => c.Type == "id");
-            //var user = await _userService.GetUserByClaimAsync(userId);
             return _checkItemService.GetCheckItemsByCheckPost(id);
         }
         // POST api/<controller>
@@ -65,7 +63,7 @@ namespace WebServiceForAngular.Controllers
             //    return BadRequest(ModelState);
             //}
             var ch = _mapper.Map<CheckListPost>(model);
-            var userId = _caller.Claims.Single(c => c.Type == "id");
+            var userId = _claimPrincipalService.GetClaimFromHttp();
             var user = await _userService.GetUserByClaimAsync(userId);
             //if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
 
@@ -80,7 +78,7 @@ namespace WebServiceForAngular.Controllers
         {
             
             var ch = _mapper.Map<CheckItem>(model);
-            var userId = _caller.Claims.Single(c => c.Type == "id");
+            var userId = _claimPrincipalService.GetClaimFromHttp();
             var user = await _userService.GetUserByClaimAsync(userId);
 
             var checkitem = new CheckItem { Body = ch.Body, Checked = ch.Checked, CheckListPostId =ch.CheckListPostId };
@@ -100,7 +98,7 @@ namespace WebServiceForAngular.Controllers
                 return BadRequest(ModelState);
             }
             var ch = _mapper.Map<CheckListPost>(model);
-            var userId = _caller.Claims.Single(c => c.Type == "id");
+            var userId = _claimPrincipalService.GetClaimFromHttp();
             var user = await _userService.GetUserByClaimAsync(userId);
 
             var checkpost = new CheckListPost { Title = ch.Title, Color = ch.Color, User = user, Id = ch.Id };

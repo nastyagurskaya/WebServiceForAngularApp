@@ -32,7 +32,7 @@ namespace WebServiceForAngular.Controllers
 
         // POST api/auth/login
         [HttpPost("login")]
-        public async Task<IActionResult> Post([FromBody]CredentialsViewModel credentials)
+        public async Task<IActionResult> Login([FromBody]CredentialsViewModel credentials)
         {
             if (!ModelState.IsValid)
             {
@@ -48,7 +48,28 @@ namespace WebServiceForAngular.Controllers
             var jwt = await Tokens.GenerateJwt(identity, _jwtFactory, credentials.UserName, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
             return new OkObjectResult(jwt);
         }
+        [HttpPost]
+        public async Task<IActionResult> Refresh(string token, string refreshToken)
+        {
+            //var principal = _tokenService.GetPrincipalFromExpiredToken(token);
+            //var username = principal.Identity.Name; //this is mapped to the Name claim by default
 
+            //var user = _usersDb.Users.SingleOrDefault(u => u.Username == username);
+            //if (user == null || user.RefreshToken != refreshToken) return BadRequest();
+
+            //var newJwtToken = _tokenService.GenerateAccessToken(principal.Claims);
+            //var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+            //user.RefreshToken = newRefreshToken;
+            //await _usersDb.SaveChangesAsync();
+
+            //return new ObjectResult(new
+            //{
+            //    token = newJwtToken,
+            //    refreshToken = newRefreshToken
+            //});
+            return null;
+        }
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))

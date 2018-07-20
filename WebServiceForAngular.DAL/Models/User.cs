@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WebServiceForAngular.DAL.Models
 {
@@ -18,5 +19,7 @@ namespace WebServiceForAngular.DAL.Models
         public ICollection<Post> Post { get; set; }
         public string IdentityId { get; set; }
         public AppUser Identity { get; set; }
+
+       
     }
 }

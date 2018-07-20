@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServiceForAngular.BLL", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServiceForAngular.DAL", "WebServiceForAngular.DAL\WebServiceForAngular.DAL.csproj", "{32D1ACA6-A409-425A-A1B8-8C2649E60205}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServiceForAngularTest", "WebServiceForAngularTest\WebServiceForAngularTest.csproj", "{B5C61D7B-B666-4086-A09A-20B74F3396F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{32D1ACA6-A409-425A-A1B8-8C2649E60205}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32D1ACA6-A409-425A-A1B8-8C2649E60205}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32D1ACA6-A409-425A-A1B8-8C2649E60205}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5C61D7B-B666-4086-A09A-20B74F3396F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5C61D7B-B666-4086-A09A-20B74F3396F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5C61D7B-B666-4086-A09A-20B74F3396F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5C61D7B-B666-4086-A09A-20B74F3396F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

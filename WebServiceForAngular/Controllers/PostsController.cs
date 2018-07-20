@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebServiceForAngular.BLL.Interfaces;
 using WebServiceForAngular.DAL.Models;
+using WebServiceForAngular.Helpers;
 using WebServiceForAngular.ViewModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -24,12 +25,12 @@ namespace WebServiceForAngular.Controllers
         private readonly IPostService _postService;
         private readonly IUserService _userService;
         private readonly IUserPostService _userPostService;
-        private readonly ClaimsPrincipal _caller;
         private readonly IMapper _mapper;
+        private readonly IClaimPrincipalService _claimPrincipalService;
 
-        public PostsController(IPostService postService, IUserService userService, IUserPostService userPostService, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+        public PostsController(IPostService postService, IUserService userService, IUserPostService userPostService, IMapper mapper, IClaimPrincipalService claimPrincipalService)
         {
-            _caller = httpContextAccessor.HttpContext.User;
+            _claimPrincipalService = claimPrincipalService;
             _postService = postService;
             _userService = userService;
             _userPostService = userPostService;
@@ -64,12 +65,16 @@ namespace WebServiceForAngular.Controllers
                 return BadRequest(ModelState);
             }
             var p = _mapper.Map<Post>(model);
-            var userId = _caller.Claims.Single(c => c.Type == "id");
+            if (p == null)
+            {
+                return BadRequest(Errors.AddErrorToModelState("createpost_failure", "Error occupied while mapping", ModelState));
+            }
+            var userId = _claimPrincipalService.GetClaimFromHttp();
             var user = await _userService.GetUserByClaimAsync(userId);
-            //if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
-
-            //await _appDbContext.User.AddAsync(new User { IdentityId = userIdentity.Id, Email = userIdentity.Email, Name = userIdentity.FirstName + " " + userIdentity.LastName, Username = userIdentity.UserName, Phone = userIdentity.PhoneNumber });
-            //await _appDbContext.SaveChangesAsync();
+            if (user == null)
+            {
+                return BadRequest(Errors.AddErrorToModelState("createpost_failure", "User did not found", ModelState));
+            }
             var post = new Post { User = user, UserId = user.Id, Body = p.Body, Title = p.Title, Color = p.Color  };
             _postService.InsertPost(post);
             return new OkObjectResult("Post created");
@@ -83,8 +88,12 @@ namespace WebServiceForAngular.Controllers
                 return BadRequest(ModelState);
             }
             var p = _mapper.Map<Post>(model);
-            var userId = _caller.Claims.Single(c => c.Type == "id");
+            var userId = _claimPrincipalService.GetClaimFromHttp();
             var user = await _userService.GetUserByClaimAsync(userId);
+            if (user == null)
+            {
+                return BadRequest(Errors.AddErrorToModelState("updatepost_failure", "User did not found", ModelState));
+            }
             var post = new Post { Id = p.Id, User = user, UserId = user.Id, Body = p.Body, Title = p.Title, Color = p.Color };
             _postService.UpdatePost(post);
             return new OkObjectResult("Post updated");
@@ -93,7 +102,7 @@ namespace WebServiceForAngular.Controllers
         [HttpGet]
         public async Task<List<Post>> GetAll()
         {
-            var userId = _caller.Claims.Single(c => c.Type == "id");
+            var userId = _claimPrincipalService.GetClaimFromHttp();
             var user = await _userService.GetUserByClaimAsync(userId);
             var posts = await _postService.GetPostsByUserAsync(user.Id);
             return posts;
@@ -101,7 +110,7 @@ namespace WebServiceForAngular.Controllers
         [HttpGet("shared")]
         public async Task<List<Post>> GetSharedPosts()
         {
-            var userId = _caller.Claims.Single(c => c.Type == "id");
+            var userId = _claimPrincipalService.GetClaimFromHttp();
             var user = await _userService.GetUserByClaimAsync(userId);
             var posts = _userPostService.GetSharedPosts(user.Id);
             return posts.ToList();

@@ -20,13 +20,14 @@ namespace WebServiceForAngular.Controllers
     {
         private readonly IUserService _userService;
         private readonly IPostService _postService;
-        private readonly ClaimsPrincipal _caller;
+        private readonly IClaimPrincipalService _claimPrincipalService;
 
-        public UsersController(IUserService userService, IPostService postService, IHttpContextAccessor httpContextAccessor)
+        public UsersController(IUserService userService, IPostService postService, IClaimPrincipalService claimPrincipalService)
         {
-            _caller = httpContextAccessor.HttpContext.User;
+            
             _userService = userService;
             _postService = postService;
+            _claimPrincipalService = claimPrincipalService;
         }
         [HttpGet]
         public IEnumerable<User> GetAll()
@@ -46,7 +47,8 @@ namespace WebServiceForAngular.Controllers
         [HttpGet("home")]
         public async Task<User> Home()
         {
-            var userId = _caller.Claims.Single(c => c.Type == "id");
+            //var userId = _caller.Claims.Single(c => c.Type == "id");
+            var userId = _claimPrincipalService.GetClaimFromHttp();
             var user = await _userService.GetUserByClaimAsync(userId);
             
             return user;

@@ -21,6 +21,7 @@ using WebServiceForAngular.DAL.EF;
 using WebServiceForAngular.DAL.Repositories;
 using WebServiceForAngular.BLL.Interfaces;
 using WebServiceForAngular.BLL.Services;
+using System.Threading.Tasks;
 
 namespace WebServiceForAngular
 {
@@ -50,6 +51,7 @@ namespace WebServiceForAngular
             services.AddTransient<ICheckItemService, CheckItemService>();
             services.AddTransient<ICheckListPostService, CheckListPostService>();
             services.AddTransient<IUserPostService, UserPostService>();
+            services.AddTransient<IClaimPrincipalService, ClaimPrincipalService>();
             // Register the ConfigurationBuilder instance of FacebookAuthSettings
 
             services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
@@ -92,6 +94,17 @@ namespace WebServiceForAngular
                 configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
                 configureOptions.TokenValidationParameters = tokenValidationParameters;
                 configureOptions.SaveToken = true;
+                configureOptions.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             // api user claim policy
