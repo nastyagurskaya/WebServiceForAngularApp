@@ -125,23 +125,24 @@ namespace WebServiceForAngular
             });
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), builder.Services);
             builder.AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAllHeaders", 
-
-
-                      b =>
-                      {
-                          b.AllowAnyOrigin()
-                           .AllowAnyHeader()
-                           .AllowAnyMethod();
-                      });
-            });
-            //services.AddHttpsRedirection(options =>
+            //services.AddCors(options =>
             //{
-            //    options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-            //    options.HttpsPort = 6200;
+            //    options.AddPolicy("AllowAllHeaders", 
+
+
+            //          b =>
+            //          {
+            //              b.AllowAnyOrigin()
+            //               .AllowAnyHeader()
+            //               .AllowAnyMethod();
+            //          });
             //});
+            services.AddCors();
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+                options.HttpsPort = 44393;
+            });
             services.AddAutoMapper();
             services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>()).AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); ;
         }
@@ -156,9 +157,12 @@ namespace WebServiceForAngular
             else
             {
                 app.UseExceptionHandler("/Error");
-                //app.UseHsts();
+                app.UseHsts();
             }
             app.UseHttpsRedirection();
+            app.UseCors(builder =>
+                 builder.WithOrigins("http://localhost:4200", "http://localhost:3000").AllowAnyMethod().AllowAnyHeader()
+            .AllowCredentials());
             //app.UseExceptionHandler(
             //    builder =>
             //    {
